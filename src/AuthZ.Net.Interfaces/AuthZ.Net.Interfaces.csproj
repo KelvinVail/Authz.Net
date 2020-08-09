@@ -1,11 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Version>0.0.1-alpha</Version>
     <Authors>Kelvin Vail</Authors>
     <Product>AuthZ.Net</Product>
-    <Description>Role-based access controls (RBAC) for user-to-system and system-to-system permissions management.</Description>
+    <Description>Interfaces used by Authz.Net</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/KelvinVail/Authz.Net</RepositoryUrl>
     <PackageTags>AuthZ Autheriztion</PackageTags>
@@ -24,10 +25,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\AuthZ.Net.Interfaces\AuthZ.Net.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

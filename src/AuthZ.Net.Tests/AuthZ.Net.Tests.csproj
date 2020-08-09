@@ -30,4 +30,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuthZ.Net\AuthZ.Net.csproj" />
+  </ItemGroup>
+
 </Project>
