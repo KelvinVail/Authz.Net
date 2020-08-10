@@ -91,7 +91,7 @@ No one else can delete an identity.
 ##### Suspend an Identity
 ```
 void AuthZ.Identity(identityId).Suspend();
-void AuthZ.Identity(identityId).Unsuspend();
+void AuthZ.Identity(identityId).Reinstate();
 void AuthZ.Identity(identityId).SuspendAndResendValidationEmail();
 ```
 A Global Admin can suspend/unsuspend any identity.\
@@ -104,7 +104,7 @@ No one else can suspend/unsuspend identities.
 Finer grain suspension can be performed like so:
 ```
 void AuthZ.App(appId).Identity(identityId).Suspend();
-void AuthZ.App(appId).Identity(identityId).Unsuspend();
+void AuthZ.App(appId).Identity(identityId).Reinstate();
 ```
 
 ##### Update an Identity
