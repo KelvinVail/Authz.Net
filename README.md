@@ -41,16 +41,16 @@ Any user that has not been authenticated and/or registered.
 Pass a bearer token into the factory so that it can determin who you are and what management role you hold.  When you call ```AuthZFactory.GetInstance(token);``` an instance of AuthZ will be created with all the appropriate actions you are allowed to perform.
 ```
 new AuthZFactory(IRepository, etc...)
-AuthZ AuthZFactory.GetInstance(token);
-AuthZ AuthZFactory.GetInstance(); // If anonymous.
+AuthZClient AuthZFactory.GetClient(token);
+AuthZClient AuthZFactory.GetClient(); // If anonymous.
 ```
 
 #### Indentity Management
 ##### Get identities
 ```
-IEnumerable<Identity> AuthZ.Identities();
-IEnumerable<Identity> AuthZ.Identities().Where(identity => identity.FirstName == "Katie");
-IEnumerable<Identity> AuthZ.Identities().Where(identity => identity.IsAppOwner);
+IEnumerable<Identity> AuthZClient.Identities();
+IEnumerable<Identity> AuthZClient.Identities().Where(identity => identity.FirstName == "Katie");
+IEnumerable<Identity> AuthZClient.Identities().Where(identity => identity.IsAppOwner);
 ```
 A Global Admin can get all identities.\
 An App Owner can get all identities from with the app they own.\
@@ -60,7 +60,7 @@ No one else can get identities.
 
 ##### Get an Identity
 ```
-Identity AuthZ.Identity(identityId);
+Identity AuthZClient.Identity(identityId);
 ```
 A Global Admin can get any identity.\
 An App Owner can get any identity from within the app they own.\
@@ -70,29 +70,29 @@ No one else can get an identity.
 
 ##### Get logged in identity
 ```
-Indentity AuthZ.LoggedInIdentity();
+Indentity AuthZClient.LoggedInIdentity();
 ```
 Any logged in identity can get themselves.
 
 ##### Register an Identity
 ```
-void AuthZ.Register(registerIdentityRequest);
+void AuthZClient.Register(registerIdentityRequest);
 ```
 Any authenticatable identity can be registered.
 
 ##### Delete an Identity
 Identities are first suspended and then soft deleted after a specified delay.
 ```
-void AuthZ.Identity(identityId).SuspendThenDelete(TimeSpan deleteDelay);
+void AuthZClient.Identity(identityId).SuspendThenDelete(TimeSpan deleteDelay);
 ```
 A Global Admin can delete any identity (including themselves).\
 No one else can delete an identity.
 
 ##### Suspend an Identity
 ```
-void AuthZ.Identity(identityId).Suspend();
-void AuthZ.Identity(identityId).Reinstate();
-void AuthZ.Identity(identityId).SuspendAndResendValidationEmail();
+void AuthZClient.Identity(identityId).Suspend();
+void AuthZClient.Identity(identityId).Reinstate();
+void AuthZClient.Identity(identityId).SuspendAndResendValidationEmail();
 ```
 A Global Admin can suspend/unsuspend any identity.\
 An App Owner can suspend/unsuspend any identity from the app they own.  They cannot suspend then resend validation email as this would suspend the identity from all apps.\
@@ -103,13 +103,13 @@ No one else can suspend/unsuspend identities.
 
 Finer grain suspension can be performed like so:
 ```
-void AuthZ.App(appId).Identity(identityId).Suspend();
-void AuthZ.App(appId).Identity(identityId).Reinstate();
+void AuthZClient.App(appId).Identity(identityId).Suspend();
+void AuthZClient.App(appId).Identity(identityId).Reinstate();
 ```
 
 ##### Update an Identity
 ```
-void AuthZ.Identity(identityId).Update(identity => identity.FirstName = "Bob");
+void AuthZClient.Identity(identityId).Update(identity => identity.FirstName = "Bob");
 ```
 A Global Admin can update any identity.\
 An Org Admin can update any identity from within their organisation.\
@@ -117,7 +117,7 @@ No one else can update identities.
 
 ##### Resend Verification Email
 ```
-void AuthZ.Identity(identityId).ResendVerificationEmail();
+void AuthZClient.Identity(identityId).ResendVerificationEmail();
 ```
 A Global Admin can resend a verifaction email to any identity.\
 An App Owner can resend a verification email to any identity of apps they own.\
