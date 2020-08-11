@@ -1,43 +1,11 @@
 ﻿namespace AuthZ.Net.Tests
 {
     using System;
-    using System.Threading.Tasks;
     using AuthZ.Net.Interfaces;
-    using AuthZ.Net.Roles;
-    using AuthZ.Net.Tests.TestDoubles;
     using Xunit;
 
     public class RegisterIdentityTests
     {
-        private readonly AuthZClient authZClient;
-
-        private readonly IdentityRepositorySpy identityRepo = new IdentityRepositorySpy();
-
-        public RegisterIdentityTests()
-        {
-            this.authZClient = new AuthZClient(this.identityRepo, new AnonymousRole());
-        }
-
-        [Theory]
-        [InlineData("Bob", "Smith", "UK", "OrgName", "bob@smith.com")]
-        [InlineData("Katie", "Jones", "US", "OrgName2", "katie@jones.com")]
-        public async Task RegisterIdentityRequestShouldAddUserToRepo(
-            string firstName,
-            string lastName,
-            string countryCode,
-            string orgName,
-            string email)
-        {
-            var request = new RegisterIdentityRequest(firstName, lastName, email, countryCode, orgName);
-            await this.authZClient.Register(request);
-
-            Assert.Equal(firstName, this.identityRepo.LastIdentityRegistered.FirstName);
-            Assert.Equal(lastName, this.identityRepo.LastIdentityRegistered.LastName);
-            Assert.Equal(email, this.identityRepo.LastIdentityRegistered.Email);
-            Assert.Equal(countryCode, this.identityRepo.LastIdentityRegistered.CountryCode);
-            Assert.Equal(orgName, this.identityRepo.LastIdentityRegistered.OrganisationName);
-        }
-
         [Fact]
         public void CreateUserShouldThrowIfFirstNameIsNullOrEmpty()
         {
