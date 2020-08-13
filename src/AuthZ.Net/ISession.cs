@@ -11,5 +11,7 @@
         Task<IIdentity> Identity(string identityId);
 
         Task<IEnumerable<IIdentity>> Identities();
+
+        IIdentity LoggedInIdentity();
     }
 }

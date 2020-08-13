@@ -5,11 +5,11 @@
 
     public class IdentityRepositorySpy : IIdentityRepository
     {
-        public RegisterIdentityRequest LastIdentityRegistered { get; private set; }
+        public IIdentity LastIdentityRegistered { get; private set; }
 
         public bool GetUserCalled { get; private set; }
 
-        public async Task Register(RegisterIdentityRequest request)
+        public async Task Register(IIdentity request)
         {
             await Task.CompletedTask;
             this.LastIdentityRegistered = request;

@@ -33,5 +33,10 @@
             throw new UnauthorizedAccessException(
                 "You are not authorized to access this information.");
         }
+
+        public IIdentity LoggedInIdentity()
+        {
+            return new AnonymousIdentity();
+        }
     }
 }

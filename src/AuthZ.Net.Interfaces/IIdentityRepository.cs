@@ -4,6 +4,6 @@
 
     public interface IIdentityRepository
     {
-        Task Register(RegisterIdentityRequest request);
+        Task Register(IIdentity request);
     }
 }
