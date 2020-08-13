@@ -1,7 +1,7 @@
 ﻿namespace AuthZ.Net.Tests.TestDoubles
 {
     using System.Threading.Tasks;
-    using global::AuthZ.Net.Interfaces;
+    using AuthZ.Net.Interfaces;
 
     public class IdentityRepositorySpy : IIdentityRepository
     {

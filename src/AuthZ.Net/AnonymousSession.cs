@@ -9,15 +9,18 @@
     {
         private readonly IIdentityRepository identityRepo;
 
-        // TODO make internal so that session cannot be manipulated
-        public AnonymousSession(IIdentityRepository identityRepo)
+        private readonly IAudit audit;
+
+        public AnonymousSession(IIdentityRepository identityRepo, IAudit audit)
         {
             this.identityRepo = identityRepo;
+            this.audit = audit;
         }
 
         public async Task Register(RegisterIdentityRequest request)
         {
             await this.identityRepo.Register(request);
+            await this.audit.RecordEvent("Register Identity", "Anon", request.Id);
         }
 
         public async Task<IIdentity> Identity(string identityId)

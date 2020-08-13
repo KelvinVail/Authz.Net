@@ -11,13 +11,15 @@
     {
         private readonly IdentityRepositorySpy identityRepo = new IdentityRepositorySpy();
 
+        private readonly AuditSpy audit = new AuditSpy();
+
         private readonly ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal();
 
         private readonly AnonymousSession session;
 
         public AnonymousSessionTests()
         {
-            this.session = new AnonymousSession(this.identityRepo);
+            this.session = new AnonymousSession(this.identityRepo, this.audit);
             var claim = new Claim(ClaimTypes.NameIdentifier, "1");
             var claimIdentity = new ClaimsIdentity();
             claimIdentity.AddClaim(claim);
@@ -50,6 +52,26 @@
             Assert.Equal(email, this.identityRepo.LastIdentityRegistered.Email);
             Assert.Equal(countryCode, this.identityRepo.LastIdentityRegistered.CountryCode);
             Assert.Equal(orgName, this.identityRepo.LastIdentityRegistered.OrganisationName);
+        }
+
+        [Theory]
+        [InlineData("1")]
+        [InlineData("123")]
+        [InlineData("ABC")]
+        public async Task AnAuditTrailIsLeftWhenAnIdentityIsRegistered(string id)
+        {
+            var c = new Claim(ClaimTypes.NameIdentifier, id);
+            var ci = new ClaimsIdentity();
+            ci.AddClaim(c);
+            var cp = new ClaimsPrincipal();
+            cp.AddIdentity(ci);
+
+            var req = new RegisterIdentityRequest("Bob", "Smith", "bob@smith.com", "UK", "Bob Smith Ltd", cp);
+            await this.session.Register(req);
+
+            Assert.Equal("Register Identity", this.audit.LastEvent);
+            Assert.Equal("Anon", this.audit.LastExecutor);
+            Assert.Equal(id, this.audit.LastTarget);
         }
 
         [Theory]
