@@ -27,31 +27,13 @@
             this.claimsPrincipal.AddIdentity(claimIdentity);
         }
 
-        [Theory]
-        [InlineData("Bob", "Smith", "UK", "OrgName", "bob@smith.com")]
-        [InlineData("Katie", "Jones", "US", "OrgName2", "katie@jones.com")]
-        public async Task AnonymousUserCanRegisterAnIdentity(
-            string firstName,
-            string lastName,
-            string countryCode,
-            string orgName,
-            string email)
+        [Fact]
+        public async Task AnonymousUserCanRegisterAnIdentity()
         {
-            var request = new RegisterIdentityRequest(
-                firstName,
-                lastName,
-                email,
-                countryCode,
-                orgName,
-                this.claimsPrincipal);
+            var request = new RegisterIdentityRequest(this.claimsPrincipal);
             await this.session.Register(request);
 
             Assert.Equal("1", this.identityRepo.LastIdentityRegistered.Id);
-            Assert.Equal(firstName, this.identityRepo.LastIdentityRegistered.FirstName);
-            Assert.Equal(lastName, this.identityRepo.LastIdentityRegistered.LastName);
-            Assert.Equal(email, this.identityRepo.LastIdentityRegistered.Email);
-            Assert.Equal(countryCode, this.identityRepo.LastIdentityRegistered.CountryCode);
-            Assert.Equal(orgName, this.identityRepo.LastIdentityRegistered.OrganisationName);
         }
 
         [Theory]
@@ -66,7 +48,7 @@
             var cp = new ClaimsPrincipal();
             cp.AddIdentity(ci);
 
-            var req = new RegisterIdentityRequest("Bob", "Smith", "bob@smith.com", "UK", "Bob Smith Ltd", cp);
+            var req = new RegisterIdentityRequest(cp);
             await this.session.Register(req);
 
             Assert.Equal("Register Identity", this.audit.LastEvent);
@@ -106,11 +88,6 @@
             Assert.IsAssignableFrom<IIdentity>(identity);
 
             Assert.Null(identity.Id);
-            Assert.Null(identity.FirstName);
-            Assert.Null(identity.LastName);
-            Assert.Null(identity.Email);
-            Assert.Null(identity.CountryCode);
-            Assert.Null(identity.OrganisationName);
         }
 
         // Identity(identityId).SuspendThenDelete(TimeSpan deleteDelay)

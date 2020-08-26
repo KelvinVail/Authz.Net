@@ -5,5 +5,7 @@
     public interface IIdentityRepository
     {
         Task Register(IIdentity request);
+
+        Task<IIdentity> GetIdentity(string id);
     }
 }

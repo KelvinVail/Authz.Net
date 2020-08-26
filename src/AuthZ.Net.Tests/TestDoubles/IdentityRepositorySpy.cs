@@ -14,5 +14,10 @@
             await Task.CompletedTask;
             this.LastIdentityRegistered = request;
         }
+
+        public async Task<IIdentity> GetIdentity(string id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
