@@ -6,7 +6,7 @@
 
     public interface ISession
     {
-        Task Register(RegisterIdentityRequest request);
+        Task Register(IIdentity identity);
 
         Task<IIdentity> Identity(string identityId);
 

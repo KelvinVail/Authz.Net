@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
     using AuthZ.Net.Identities;
     using AuthZ.Net.Interfaces;
-    using AuthZ.Net.Tests.Helpers;
+    using AuthZ.Net.Tests.TestDoubles;
     using Xunit;
 
     public class IdentityRepositoryTests
@@ -14,11 +14,20 @@
         [Fact]
         public async Task CanRegisterAnIdentity()
         {
-            await this.repo.Register(Identity("1"));
+            await this.repo.Register(new IdentityStub("1"));
         }
 
         [Fact]
-        public async Task IdentityIsAnonymousThrow()
+        public async Task FirstIdentityRegisteredIsSetAsGlobalAdmin()
+        {
+            await this.repo.Register(new IdentityStub("1"));
+
+            var i = await this.repo.GetIdentity("1");
+            Assert.IsAssignableFrom<GlobalAdminIdentity>(i);
+        }
+
+        [Fact]
+        public async Task CannotRegisterAnonymousIdentity()
         {
             var anon = new AnonymousIdentity();
             await Assert.ThrowsAsync<InvalidOperationException>(() => this.repo.Register(anon));
@@ -44,7 +53,7 @@
         [InlineData("ABC-123")]
         public async Task IdentityCanBeRetrieved(string id)
         {
-            await this.repo.Register(Identity(id));
+            await this.repo.Register(new IdentityStub(id));
 
             var i = await this.repo.GetIdentity(id);
 
@@ -55,13 +64,15 @@
         [InlineData("1")]
         [InlineData("ABC")]
         [InlineData("ABC-123")]
-        public async Task IdentitySubTypeIsRegisteredSubTypeIsReturned(string id)
+        public async Task IdentitySubTypeIsRegisteredSameSubTypeIsReturned(string id)
         {
-            var orgAdmin = new OrgAdminIdentity(id);
+            await this.repo.Register(new IdentityStub("GlobalAdmin"));
+
+            var orgAdmin = new IdentityStub(id);
             await this.repo.Register(orgAdmin);
 
             var i = await this.repo.GetIdentity(id);
-            Assert.IsAssignableFrom<OrgAdminIdentity>(i);
+            Assert.IsAssignableFrom<IdentityStub>(i);
         }
 
         [Theory]
@@ -70,27 +81,15 @@
         [InlineData("ABC-123")]
         public async Task IdentityCanBeUpdated(string id)
         {
-            var gen = new GenericIdentity(id);
-            await this.repo.Register(gen);
+            await this.repo.Register(new IdentityStub("GlobalAdmin"));
+            var one = new IdentityStub(id);
+            await this.repo.Register(one);
 
-            var i = await this.repo.GetIdentity(id);
-            Assert.IsAssignableFrom<GenericIdentity>(i);
-
-            var orgAdmin = new OrgAdminIdentity(id);
-            await this.repo.Register(orgAdmin);
+            var two = new IdentityStubTwo(id);
+            await this.repo.Register(two);
 
             var updated = await this.repo.GetIdentity(id);
-            Assert.IsAssignableFrom<OrgAdminIdentity>(updated);
-        }
-
-        private static RegisterIdentityRequest Identity(string id)
-        {
-            var p = new ClaimsPrincipleBuilder()
-                .IsAuthenticated()
-                .WithId(id)
-                .Build();
-
-            return new RegisterIdentityRequest(p);
+            Assert.IsAssignableFrom<IdentityStubTwo>(updated);
         }
     }
 }

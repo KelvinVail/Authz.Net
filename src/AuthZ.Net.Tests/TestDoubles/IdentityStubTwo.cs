@@ -1,10 +1,10 @@
-﻿namespace AuthZ.Net.Identities
+﻿namespace AuthZ.Net.Tests.TestDoubles
 {
     using AuthZ.Net.Interfaces;
 
-    public sealed class GenericIdentity : IIdentity
+    public class IdentityStubTwo : IIdentity
     {
-        public GenericIdentity(string id)
+        public IdentityStubTwo(string id)
         {
             this.Id = id;
         }

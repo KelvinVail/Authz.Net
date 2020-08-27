@@ -4,6 +4,6 @@
 
     public class AnonymousIdentity : IIdentity
     {
-        public string Id { get; }
+        public string Id => "Anon";
     }
 }

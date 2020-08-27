@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+    using AuthZ.Net.Identities;
     using AuthZ.Net.Interfaces;
 
     public class InMemoryIdentityRepository : IIdentityRepository
@@ -11,13 +13,9 @@
 
         public async Task Register(IIdentity identity)
         {
-            if (identity is null) throw new ArgumentNullException(nameof(identity));
-            if (string.IsNullOrEmpty(identity.Id)) throw new InvalidOperationException();
-
-            if (this.repo.ContainsKey(identity.Id))
-                this.repo.Remove(identity.Id);
-
-            this.repo.Add(identity.Id, identity);
+            Validate(identity);
+            this.RemoveIfExists(identity);
+            this.repo.Add(identity.Id, this.MakeGlobalAdminIfFirst(identity));
 
             await Task.CompletedTask;
         }
@@ -27,6 +25,24 @@
             await Task.CompletedTask;
 
             return this.repo.ContainsKey(id) ? this.repo[id] : null;
+        }
+
+        private static void Validate(IIdentity identity)
+        {
+            if (identity is null) throw new ArgumentNullException(nameof(identity));
+            if (string.IsNullOrEmpty(identity.Id)) throw new InvalidOperationException();
+            if (identity.GetType().Name == nameof(AnonymousIdentity)) throw new InvalidOperationException();
+        }
+
+        private void RemoveIfExists(IIdentity identity)
+        {
+            if (this.repo.ContainsKey(identity.Id))
+                this.repo.Remove(identity.Id);
+        }
+
+        private IIdentity MakeGlobalAdminIfFirst(IIdentity identity)
+        {
+            return !this.repo.Any() ? new GlobalAdminIdentity(identity) : identity;
         }
     }
 }

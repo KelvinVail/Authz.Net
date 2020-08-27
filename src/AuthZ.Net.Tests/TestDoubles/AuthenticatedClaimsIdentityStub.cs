@@ -4,10 +4,10 @@
 
     public class AuthenticatedClaimsIdentityStub : ClaimsIdentity
     {
-        public string AuthenticationType { get; set; }
+        public override string AuthenticationType { get; } = "None";
 
         public override bool IsAuthenticated { get; } = true;
 
-        public string Name { get; set; }
+        public override string Name { get; } = "Stub";
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace AuthZ.Net.Identities
+﻿namespace AuthZ.Net.Tests.TestDoubles
 {
     using AuthZ.Net.Interfaces;
 
-    public class OrgAdminIdentity : IIdentity
+    public class IdentityStub : IIdentity
     {
-        public OrgAdminIdentity(string id)
+        public IdentityStub(string id)
         {
             this.Id = id;
         }

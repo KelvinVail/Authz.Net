@@ -8,20 +8,18 @@
 
     public class AnonymousSession : ISession
     {
-        private readonly IIdentityRepository identityRepo;
-
         private readonly IAudit audit;
 
-        public AnonymousSession(IIdentityRepository identityRepo, IAudit audit)
+        internal AnonymousSession(IAudit audit)
         {
-            this.identityRepo = identityRepo;
             this.audit = audit;
         }
 
-        public async Task Register(RegisterIdentityRequest request)
+        public async Task Register(IIdentity identity)
         {
-            await this.identityRepo.Register(request);
-            await this.audit.RecordEvent("Register Identity", "Anon", request.Id);
+            await this.audit.RecordEvent("Register Identity Attempt", "Anon", identity.Id);
+            throw new UnauthorizedAccessException(
+                "You are not authorized to perform this action.");
         }
 
         public async Task<IIdentity> Identity(string identityId)
