@@ -9,10 +9,10 @@
 
         public bool GetUserCalled { get; private set; }
 
-        public async Task Register(IIdentity request)
+        public async Task Register(IIdentity identity)
         {
             await Task.CompletedTask;
-            this.LastIdentityRegistered = request;
+            this.LastIdentityRegistered = identity;
         }
 
         public async Task<IIdentity> GetIdentity(string id)

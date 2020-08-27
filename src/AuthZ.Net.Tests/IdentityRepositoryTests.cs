@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using AuthZ.Net.Identities;
     using AuthZ.Net.Interfaces;
     using AuthZ.Net.Tests.Helpers;
     using Xunit;
@@ -27,7 +28,7 @@
         public async Task IdentityIsNullThrow()
         {
             var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => this.repo.Register(null));
-            Assert.Equal("request", ex.ParamName);
+            Assert.Equal("identity", ex.ParamName);
         }
 
         [Fact]
@@ -48,6 +49,38 @@
             var i = await this.repo.GetIdentity(id);
 
             Assert.Equal(id, i.Id);
+        }
+
+        [Theory]
+        [InlineData("1")]
+        [InlineData("ABC")]
+        [InlineData("ABC-123")]
+        public async Task IdentitySubTypeIsRegisteredSubTypeIsReturned(string id)
+        {
+            var orgAdmin = new OrgAdminIdentity(id);
+            await this.repo.Register(orgAdmin);
+
+            var i = await this.repo.GetIdentity(id);
+            Assert.IsAssignableFrom<OrgAdminIdentity>(i);
+        }
+
+        [Theory]
+        [InlineData("1")]
+        [InlineData("ABC")]
+        [InlineData("ABC-123")]
+        public async Task IdentityCanBeUpdated(string id)
+        {
+            var gen = new GenericIdentity(id);
+            await this.repo.Register(gen);
+
+            var i = await this.repo.GetIdentity(id);
+            Assert.IsAssignableFrom<GenericIdentity>(i);
+
+            var orgAdmin = new OrgAdminIdentity(id);
+            await this.repo.Register(orgAdmin);
+
+            var updated = await this.repo.GetIdentity(id);
+            Assert.IsAssignableFrom<OrgAdminIdentity>(updated);
         }
 
         private static RegisterIdentityRequest Identity(string id)

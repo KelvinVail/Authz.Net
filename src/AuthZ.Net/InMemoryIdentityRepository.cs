@@ -9,12 +9,15 @@
     {
         private readonly Dictionary<string, IIdentity> repo = new Dictionary<string, IIdentity>();
 
-        public async Task Register(IIdentity request)
+        public async Task Register(IIdentity identity)
         {
-            if (request is null) throw new ArgumentNullException(nameof(request));
-            if (string.IsNullOrEmpty(request.Id)) throw new InvalidOperationException();
+            if (identity is null) throw new ArgumentNullException(nameof(identity));
+            if (string.IsNullOrEmpty(identity.Id)) throw new InvalidOperationException();
 
-            this.repo.Add(request.Id, request);
+            if (this.repo.ContainsKey(identity.Id))
+                this.repo.Remove(identity.Id);
+
+            this.repo.Add(identity.Id, identity);
 
             await Task.CompletedTask;
         }
@@ -23,7 +26,7 @@
         {
             await Task.CompletedTask;
 
-            return this.repo.ContainsKey(id) ? new GenericIdentity(id) : null;
+            return this.repo.ContainsKey(id) ? this.repo[id] : null;
         }
     }
 }

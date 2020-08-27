@@ -1,10 +1,10 @@
-﻿namespace AuthZ.Net
+﻿namespace AuthZ.Net.Identities
 {
     using AuthZ.Net.Interfaces;
 
-    public sealed class GenericIdentity : IIdentity
+    public class OrgAdminIdentity : IIdentity
     {
-        public GenericIdentity(string id)
+        public OrgAdminIdentity(string id)
         {
             this.Id = id;
         }

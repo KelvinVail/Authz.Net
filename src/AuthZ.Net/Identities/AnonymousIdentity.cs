@@ -1,4 +1,4 @@
-﻿namespace AuthZ.Net
+﻿namespace AuthZ.Net.Identities
 {
     using AuthZ.Net.Interfaces;
 

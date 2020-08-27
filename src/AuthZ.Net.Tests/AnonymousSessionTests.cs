@@ -3,6 +3,7 @@
     using System;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using AuthZ.Net.Identities;
     using AuthZ.Net.Interfaces;
     using AuthZ.Net.Tests.TestDoubles;
     using Xunit;

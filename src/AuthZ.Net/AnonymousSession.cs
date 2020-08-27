@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using AuthZ.Net.Identities;
     using AuthZ.Net.Interfaces;
 
     public class AnonymousSession : ISession
